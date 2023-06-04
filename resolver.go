@@ -4,6 +4,7 @@
 package bibtex
 
 import (
+	"bytes"
 	"fmt"
 	gotok "go/token"
 	"strings"
@@ -56,6 +57,16 @@ func exprText(x ast.Expr) string {
 		left := exprText(t.X)
 		right := exprText(t.Y)
 		return left + right
+	case *ast.CmdText:
+		b := bytes.Buffer{}
+		for i, val := range t.Values {
+			b.WriteString(exprText(val))
+
+			if i != (len(t.Values) - 1) {
+				b.WriteString(", ")
+			}
+		}
+		return b.String()
 	default:
 		panic("unhandled ast.Expr value")
 	}
